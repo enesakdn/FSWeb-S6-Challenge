@@ -1,18 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Karakter from "./components/Karakter.js";
+import NavBar from "./components/Navbar";
+import SearchBar from "./components/SearchBar";
 
 const App = () => {
-  // Try to think through what state you'll need for this app before starting. Then build out
-  // the state properties here.
+  const [data, setData] = useState(null);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
 
-  // Fetch characters from the API in an effect hook. Remember, anytime you have a 
-  // side effect in a component, you want to think about which state and/or props it should
-  // sync up with, if any.
+  useEffect(() => {
+    axios
+      .get("https://swapi.dev/api/films/")
+      .then((response) => {
+        //setFilmİnfo(response.data[0].results);
+        console.log("Bu films", response.data[0].results);
+      })
+      .catch((error) => console.error());
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("https://swapi.dev/api/people/?page=" + page)
+      .then((response) => {
+        setData(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => console.error());
+  }, [page]);
 
   return (
     <div className="App">
-      <h1 className="Header">Karakterler</h1>
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+        data={data}
+        setData={setData}
+      />
+      {data ? data.map((a) => <Karakter a={a} />) : <p>Yükleniyor...</p>}
+      <NavBar setPage={setPage} />
     </div>
   );
-}
+};
 
 export default App;

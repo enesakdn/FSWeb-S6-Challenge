@@ -670,3 +670,4 @@ export const films = [
     ],
   },
 ];
+export default films;
